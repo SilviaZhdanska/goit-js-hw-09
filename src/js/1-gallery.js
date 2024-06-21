@@ -1,3 +1,6 @@
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
+
 const images = [
   {
     preview:
@@ -64,40 +67,29 @@ const images = [
   },
 ];
 
-import SimpleLightbox from 'simplelightbox';
-import 'simplelightbox/dist/simple-lightbox.min.css';
-let gallery = new SimpleLightbox('.gallery a');
-gallery.on('show.simplelightbox', function () {
-  // do something…
+document.addEventListener('DOMContentLoaded', function () {
+  const list = document.querySelector('.gallery');
+  list.innerHTML = createMarkup(images);
+
+  let gallery = new SimpleLightbox('.gallery a', {
+    captionsData: 'alt',
+    captionDelay: 250,
+    captionPosition: 'bottom',
+  });
+
+  gallery.on('error.simplelightbox', function (e) {
+    console.log(e);
+  });
 });
-
-gallery.on('error.simplelightbox', function (e) {
-  console.log(e); // some usefull information
-});
-
-const list = document.querySelector('.gallery');
-// // list.insertAdjacentHTML('afterbegin', createMarkup(images));
-
-// function handlerGetImage(event) {
-//   event.preventDefault();
-
-//   if (event.currentTarget === event.target) {
-//     return;
-//   }
-
-//   const originalImage = event.target.dataset.source;
-// }
 
 function createMarkup(arr) {
   return arr
     .map(
       ({ preview, original, description }) => `
       <li class="gallery-item">
-      <a class="gallery-link" href="${original}">
-      <img class="gallery-image" src="${preview}" alt="${description}">
-      </a>
+        <a href="${original}" class="gallery-link"><img src="${preview}" alt="${description}" title="${description}" class="gallery-image"/></a>
       </li>
-        `
+      `
     )
     .join('');
 }
